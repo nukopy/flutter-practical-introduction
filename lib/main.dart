@@ -52,13 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
-      print("Hello World");
     });
   }
 
@@ -66,57 +60,36 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Row(
-        children: const [
-          Icon(Icons.create),
-          Text("初めてのタイトル"),
-        ],
-      )),
-      body: Column(
-        children: [
-          const Text("Hello World"),
-          const Text("ハローワールド"),
-          TextButton(
-            onPressed: () => {print("ボタンが押されたよ")},
-            child: const Text("ボタン"),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const [
-              Icon(
-                Icons.favorite,
-                color: Colors.pink,
-                size: 24.0,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            if (_counter % 2 == 0)
+              const Text(
+                '偶数です',
+                style: const TextStyle(fontSize: 20, color: Colors.red),
               ),
-              Icon(
-                Icons.audiotrack,
-                color: Colors.green,
-                size: 32.5,
+            if (_counter % 2 == 1)
+              const Text(
+                '奇数です',
+                style: const TextStyle(fontSize: 20, color: Colors.blue),
               ),
-              Icon(
-                Icons.beach_access,
-                color: Colors.blue,
-                size: 45.0,
-              ),
-            ],
-          )
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {print("押したね?")},
-        child: const Icon(Icons.timer),
-      ),
-      drawer: Drawer(
-        child: Column(children: const [
-          Text("Drawer"),
-          AboutDialog(),
-        ]),
-      ),
-      endDrawer: Drawer(
-        child: Column(children: const [
-          Text("End Drawer"),
-          AboutDialog(),
-        ]),
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
       ),
     );
   }
