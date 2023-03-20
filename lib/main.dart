@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -62,28 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            if (_counter % 2 == 0)
-              const Text(
-                '偶数です',
-                style: const TextStyle(fontSize: 20, color: Colors.red),
-              ),
-            if (_counter % 2 == 1)
-              const Text(
-                '奇数です',
-                style: const TextStyle(fontSize: 20, color: Colors.blue),
-              ),
-          ],
+      body: const Center(
+        child: Icon(
+          FontAwesomeIcons.gift,
+          color: Colors.teal,
         ),
       ),
       floatingActionButton: FloatingActionButton(
