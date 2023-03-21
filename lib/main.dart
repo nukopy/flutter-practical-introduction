@@ -48,32 +48,87 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  final int durationSeconds = 2;
+  late AnimationController _animationController;
 
-  void _incrementCounter() {
+  // 再生
+  _forward() async {
     setState(() {
-      _counter++;
+      _animationController.forward();
     });
+  }
+
+  // 停止
+  _stop() async {
+    setState(() {
+      _animationController.stop();
+    });
+  }
+
+  // 逆再生
+  _reverse() async {
+    setState(() {
+      _animationController.reverse();
+    });
+  }
+
+  // 画面初期化時に呼ばれる
+  @override
+  void initState() {
+    super.initState();
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+  }
+
+  // 画面破棄時に呼ばれる
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: const Center(
-        child: Icon(
-          FontAwesomeIcons.gift,
-          color: Colors.teal,
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Transition 系 Widget"),
+              SizeTransition(
+                  sizeFactor: _animationController,
+                  child: Center(
+                    child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Container(color: Colors.amber)),
+                  )),
+            ],
+          ),
+        ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FloatingActionButton(
+              onPressed: _forward,
+              tooltip: 'Click me!',
+              child: const Icon(Icons.play_arrow),
+            ),
+            FloatingActionButton(
+              onPressed: _stop,
+              tooltip: 'Click me!',
+              child: const Icon(Icons.stop),
+            ),
+            FloatingActionButton(
+              onPressed: _reverse,
+              tooltip: 'Click me!',
+              child: const Icon(Icons.replay),
+            ),
+          ],
+        ));
   }
 }
