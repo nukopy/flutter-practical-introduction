@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -49,16 +51,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  // アニメーションに関する定数
+  static const int durationSeconds = 3;
+
+  // アニメーションのコントローラー
   late AnimationController _animationController;
-
-  // Tween double
-  late Animation<double> _animationDouble;
-  final Tween<double> _tweenDouble = Tween(begin: 100.0, end: 300.0);
-
-  // Tween color
-  late Animation<Color?> _animationColor;
-  final ColorTween _tweenColor =
-      ColorTween(begin: Colors.green, end: Colors.blue);
+  late Animation _animation;
 
   // 再生
   _forward() async {
@@ -85,22 +83,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
-    // init _animationController
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 3));
-
-    // AnimationControllerとTweenからAnimationを作る(サイズ)
-    _animationDouble = _tweenDouble.animate(_animationController);
-    _animationDouble.addListener(() {
-      setState(() {});
-    });
-
-    // AnimationControllerとTweenからAnimationを作る(色)
-    _animationColor = _tweenColor.animate(_animationController);
-    _animationColor.addListener(() {
-      setState(() {});
-    });
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: durationSeconds),
+    );
+    _animation = _animationController.drive(Tween(begin: 0.0, end: 2.0 * pi));
   }
 
   // 破棄
@@ -117,23 +104,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("AnimationController:${_animationController.value}"),
-            Text("AnimationDouble:${_animationDouble.value}"),
-            Text("AnimationColor:${_animationColor.value}"),
-            SizeTransition(
-              sizeFactor: _animationController,
-              child: Center(
-                child: SizedBox(
-                  width: 150,
-                  height: _animationDouble.value,
-                  child: Container(color: _animationColor.value),
-                ),
-              ),
-            ),
-          ],
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, _) {
+            return Transform.rotate(
+                angle: _animation.value,
+                child: const Icon(Icons.cached, size: 100));
+          },
         ),
       ),
       // 再生、停止、逆再生のボタン
