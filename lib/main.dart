@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Practical Introduction'),
     );
   }
 }
@@ -49,8 +49,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  final int durationSeconds = 2;
   late AnimationController _animationController;
+
+  // Tween double
+  late Animation<double> _animationDouble;
+  final Tween<double> _tweenDouble = Tween(begin: 100.0, end: 300.0);
+
+  // Tween color
+  late Animation<Color?> _animationColor;
+  final ColorTween _tweenColor =
+      ColorTween(begin: Colors.green, end: Colors.blue);
 
   // 再生
   _forward() async {
@@ -73,15 +81,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
-  // 画面初期化時に呼ばれる
+  // 生成
   @override
   void initState() {
     super.initState();
+
+    // init _animationController
     _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+        AnimationController(vsync: this, duration: const Duration(seconds: 3));
+
+    // AnimationControllerとTweenからAnimationを作る(サイズ)
+    _animationDouble = _tweenDouble.animate(_animationController);
+    _animationDouble.addListener(() {
+      setState(() {});
+    });
+
+    // AnimationControllerとTweenからAnimationを作る(色)
+    _animationColor = _tweenColor.animate(_animationController);
+    _animationColor.addListener(() {
+      setState(() {});
+    });
   }
 
-  // 画面破棄時に呼ばれる
+  // 破棄
   @override
   void dispose() {
     _animationController.dispose();
@@ -91,44 +113,38 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Transition 系 Widget"),
-              SizeTransition(
-                  sizeFactor: _animationController,
-                  child: Center(
-                    child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: Container(color: Colors.amber)),
-                  )),
-            ],
-          ),
-        ),
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FloatingActionButton(
-              onPressed: _forward,
-              tooltip: 'Click me!',
-              child: const Icon(Icons.play_arrow),
-            ),
-            FloatingActionButton(
-              onPressed: _stop,
-              tooltip: 'Click me!',
-              child: const Icon(Icons.stop),
-            ),
-            FloatingActionButton(
-              onPressed: _reverse,
-              tooltip: 'Click me!',
-              child: const Icon(Icons.replay),
+            Text("AnimationController:${_animationController.value}"),
+            Text("AnimationDouble:${_animationDouble.value}"),
+            Text("AnimationColor:${_animationColor.value}"),
+            SizeTransition(
+              sizeFactor: _animationController,
+              child: Center(
+                child: SizedBox(
+                  width: 150,
+                  height: _animationDouble.value,
+                  child: Container(color: _animationColor.value),
+                ),
+              ),
             ),
           ],
-        ));
+        ),
+      ),
+      // 再生、停止、逆再生のボタン
+      floatingActionButton:
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        FloatingActionButton(
+            onPressed: _forward, child: const Icon(Icons.arrow_forward)),
+        FloatingActionButton(onPressed: _stop, child: const Icon(Icons.pause)),
+        FloatingActionButton(
+            onPressed: _reverse, child: const Icon(Icons.arrow_back)),
+      ]),
+    );
   }
 }
